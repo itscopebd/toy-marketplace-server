@@ -1,16 +1,16 @@
 const express = require("express");
-const app= express();
- const cors= require("cors");
- require('dotenv').config();
- const { MongoClient, ServerApiVersion } = require('mongodb');
-const port= process.env.PORT || 5000;
+const app = express();
+const cors = require("cors");
+require('dotenv').config();
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
+const port = process.env.PORT || 5000;
 //  middleware
 
 app.use(cors())
 app.use(express.json())
 
-app.get("/",(req,res)=>{
-    res.send("Rofiq")
+app.get("/", (req, res) => {
+  res.send("Rofiq")
 })
 
 
@@ -33,10 +33,58 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
     // Send a ping to confirm a successful connection
+    const database = client.db("toyfriends");
+    const toysCollection = database.collection("toys");
+    const catCollection = database.collection("category");
+    const subCatCollection = database.collection("subCategory");
+
+    app.get("/toys", async (req, res) => {
+
+      const result = await toysCollection.find().toArray();
+      res.send(result)
+
+    })
+
+
+    app.get("/main-cat", async (req, res) => {
+      const result = await catCollection.find().toArray()
+      res.send(result)
+    })
+
+    app.get("/sub-cat", async (req, res) => {
+      const result = await subCatCollection.find().toArray()
+      res.send(result)
+    })
+
+    app.get("/filterData/:id", async (req, res) => {
+
+      const id = req.params.id;
+      const filter = { catId: new ObjectId(id) }
+      // console.log(filter)
+      const option = {
+        sort: {
+          catId: id
+        }
+      }
+      const result = await toysCollection.find(filter, option).toArray();
+      res.send(result)
+
+    })
+
+
+    // add toy 
+
+    app.post("/addtoy", async (req, res) => {
+      const data = req.body;
+      const result = await toysCollection.insertOne(data);
+      res.send(result)
+    })
+
+
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
-   
+
   }
 }
 run().catch(console.dir);
@@ -50,6 +98,6 @@ run().catch(console.dir);
 
 
 
-app.listen(port,()=>{
-    console.log("server Running")
+app.listen(port, () => {
+  console.log("server Running")
 })
