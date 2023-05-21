@@ -56,6 +56,23 @@ async function run() {
       res.send(result)
     })
 
+    app.patch("/update/:id", async (req, res) => {
+      const id = req.params.id;
+      const data = req.body;
+      const filter = { _id: new ObjectId(id) };
+      const option = { upsert: true };
+      const updateDos = {
+        
+           $set:{
+            ...data
+           }
+        
+      }
+     
+      const result = await toysCollection.updateOne(filter, updateDos)
+      res.send(result)
+
+    })
 
 
     // app.get("/main-cat", async (req, res) => {
@@ -100,6 +117,9 @@ async function run() {
       const query = { _id: new ObjectId(id) }
       console.log(query)
     })
+
+
+
 
 
     await client.db("admin").command({ ping: 1 });
