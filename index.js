@@ -51,9 +51,9 @@ async function run() {
     app.get("/toy/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
-
       const result = await toysCollection.findOne(query);
       res.send(result)
+      
     })
 
     app.patch("/update/:id", async (req, res) => {
@@ -73,32 +73,6 @@ async function run() {
       res.send(result)
 
     })
-
-
-    // app.get("/main-cat", async (req, res) => {
-    //   const result = await catCollection.find().toArray()
-    //   res.send(result)
-    // })
-
-    // app.get("/sub-cat", async (req, res) => {
-    //   const result = await subCatCollection.find().toArray()
-    //   res.send(result)
-    // })
-
-    // app.get("/filterData/:id", async (req, res) => {
-
-    //   const id = req.params.id;
-    //   const filter = { catId: new ObjectId(id) }
-    //   // console.log(filter)
-    //   const option = {
-    //     sort: {
-    //       catId: id
-    //     }
-    //   }
-    //   const result = await toysCollection.find(filter, option).toArray();
-    //   res.send(result)
-
-    // })
 
 
     // add toy 
