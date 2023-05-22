@@ -31,7 +31,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    // await client.connect();
     // Send a ping to confirm a successful connection
     const database = client.db("toyfriends");
     const toysCollection = database.collection("toys");
@@ -53,8 +53,28 @@ async function run() {
       const query = { _id: new ObjectId(id) };
       const result = await toysCollection.findOne(query);
       res.send(result)
-      
+
     })
+
+
+    // find match email data 
+
+    app.get("/mytoys", async (req, res) => {
+      let query = {};
+      if (req.query?.email) {
+        console.log(query)
+        query = { email: req.query.email };
+      }
+      console.log(query)
+      const result = await toysCollection.find(query).toArray();
+      res.send(result)
+
+    })
+
+
+
+
+
 
     app.patch("/update/:id", async (req, res) => {
       const id = req.params.id;
@@ -62,13 +82,13 @@ async function run() {
       const filter = { _id: new ObjectId(id) };
       const option = { upsert: true };
       const updateDos = {
-        
-           $set:{
-            ...data
-           }
-        
+
+        $set: {
+          ...data
+        }
+
       }
-     
+
       const result = await toysCollection.updateOne(filter, updateDos)
       res.send(result)
 
@@ -96,7 +116,7 @@ async function run() {
 
 
 
-    await client.db("admin").command({ ping: 1 });
+    // await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
 
