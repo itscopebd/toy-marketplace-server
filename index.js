@@ -10,7 +10,7 @@ app.use(cors())
 app.use(express.json())
 
 app.get("/", (req, res) => {
-  res.send("Rofiq")
+  res.send("Toys")
 })
 
 
@@ -36,11 +36,9 @@ async function run() {
     const database = client.db("toyfriends");
     const toysCollection = database.collection("toys");
 
-    const catCollection = database.collection("category");
-    const subCatCollection = database.collection("subCategory");
 
     app.get("/toys", async (req, res) => {
-
+      console.log("rofiq")
       const result = await toysCollection.find().toArray();
       res.send(result)
 
@@ -106,13 +104,22 @@ async function run() {
 
     // delete toy 
 
-    app.delete("/delete/:id", async (req, res) => {
+    app.delete("/del/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) }
-      console.log(query)
+      const result = await toysCollection.deleteOne(query);
+      res.send(result)
     })
 
+    app.get("/search/:text", async (req, res) => {
+      const text = req.params.text;
+      console.log(text)
 
+      // const query = { name: text }
+      const result = await toysCollection.find(
+       {name:{$regex:text, $options:"i"}}).toArray();
+      res.send(result)
+    })
 
 
 
