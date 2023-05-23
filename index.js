@@ -38,8 +38,9 @@ async function run() {
 
 
     app.get("/toys", async (req, res) => {
-      console.log("rofiq")
-      const result = await toysCollection.find().toArray();
+
+      const getData = toysCollection.find().limit(20);
+      const result= await getData.toArray()
       res.send(result)
 
     })
@@ -69,10 +70,7 @@ async function run() {
 
     })
 
-
-
-
-
+// update data 
 
     app.patch("/update/:id", async (req, res) => {
       const id = req.params.id;
@@ -111,6 +109,7 @@ async function run() {
       res.send(result)
     })
 
+// search data 
     app.get("/search/:text", async (req, res) => {
       const text = req.params.text;
       console.log(text)
@@ -130,13 +129,6 @@ async function run() {
   }
 }
 run().catch(console.dir);
-
-
-
-
-
-
-
 
 
 
