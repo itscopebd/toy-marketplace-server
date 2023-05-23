@@ -40,7 +40,7 @@ async function run() {
     app.get("/toys", async (req, res) => {
 
       const getData = toysCollection.find().limit(20);
-      const result= await getData.toArray()
+      const result = await getData.toArray()
       res.send(result)
 
     })
@@ -70,7 +70,7 @@ async function run() {
 
     })
 
-// update data 
+    // update data 
 
     app.patch("/update/:id", async (req, res) => {
       const id = req.params.id;
@@ -78,16 +78,12 @@ async function run() {
       const filter = { _id: new ObjectId(id) };
       const option = { upsert: true };
       const updateDos = {
-
         $set: {
           ...data
         }
-
       }
-
       const result = await toysCollection.updateOne(filter, updateDos)
       res.send(result)
-
     })
 
 
@@ -109,17 +105,36 @@ async function run() {
       res.send(result)
     })
 
-// search data 
+    // search data 
     app.get("/search/:text", async (req, res) => {
       const text = req.params.text;
       console.log(text)
 
       // const query = { name: text }
       const result = await toysCollection.find(
-       {name:{$regex:text, $options:"i"}}).toArray();
+        { name: { $regex: text, $options: "i" } }).toArray();
       res.send(result)
     })
 
+
+    // low price api
+
+    app.get("/low", async (req, res) => {
+
+      const query = {}
+   
+      const result = await toysCollection.find().sort({price:1}).toArray()
+      res.send(result)
+    })
+// high price 
+
+app.get("/high", async (req, res) => {
+
+  const query = {}
+
+  const result = await toysCollection.find().sort({price:-1}).toArray()
+  res.send(result)
+})
 
 
     // await client.db("admin").command({ ping: 1 });
